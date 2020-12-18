@@ -6,13 +6,15 @@ use Exception;
 use Flugg\Responder\Contracts\Responder;
 use Flugg\Responder\Exceptions\Http\HttpException;
 use Flugg\Responder\Exceptions\Http\PageNotFoundException;
+use Flugg\Responder\Exceptions\Http\ResourceNotFoundException;
 use Flugg\Responder\Exceptions\Http\RelationNotFoundException;
 use Flugg\Responder\Exceptions\Http\UnauthenticatedException;
 use Flugg\Responder\Exceptions\Http\UnauthorizedException;
 use Flugg\Responder\Exceptions\Http\ValidationFailedException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\QueryException as BaseQueryException;
+use Illuminate\Database\Eloquent\ModelNotFoundException as BaseModelNotFoundException;
 use Illuminate\Database\Eloquent\RelationNotFoundException as BaseRelationNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
@@ -66,7 +68,8 @@ trait ConvertsExceptions
             AuthenticationException::class => UnauthenticatedException::class,
             AuthorizationException::class => UnauthorizedException::class,
             NotFoundHttpException::class => PageNotFoundException::class,
-            ModelNotFoundException::class => PageNotFoundException::class,
+            BaseQueryException::class => QueryException::class,
+            BaseModelNotFoundException::class => ResourceNotFoundException::class,
             BaseRelationNotFoundException::class => RelationNotFoundException::class,
             ValidationException::class => function ($exception) {
                 throw new ValidationFailedException($exception->validator);
