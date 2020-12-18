@@ -2,6 +2,8 @@
 
 namespace Flugg\Responder\Exceptions\Http;
 
+use Illuminate\Database\QueryException as BaseQueryException;
+
 /**
  * An exception thrown whan a page is not found.
  *
@@ -24,4 +26,24 @@ class QueryException extends HttpException
      * @var string|null
      */
     protected $errorCode = 'query_error';
+
+    protected $exception;
+
+    // public function getData(Throwable $exception)
+    // {
+    //     if ($exception instanceof BaseQueryException) {
+    //         $exception = 'nganu';
+    //     }
+
+    //     dd($exception);
+
+    //     return $exception;
+    // }
+
+    public function data()
+    {
+
+        return ['description' => 'nganu'];
+    }
+
 }

@@ -8,6 +8,7 @@ use Flugg\Responder\Exceptions\Http\HttpException;
 use Flugg\Responder\Exceptions\Http\PageNotFoundException;
 use Flugg\Responder\Exceptions\Http\ResourceNotFoundException;
 use Flugg\Responder\Exceptions\Http\RelationNotFoundException;
+use Flugg\Responder\Exceptions\Http\QueryException;
 use Flugg\Responder\Exceptions\Http\UnauthenticatedException;
 use Flugg\Responder\Exceptions\Http\UnauthorizedException;
 use Flugg\Responder\Exceptions\Http\ValidationFailedException;
@@ -68,7 +69,27 @@ trait ConvertsExceptions
             AuthenticationException::class => UnauthenticatedException::class,
             AuthorizationException::class => UnauthorizedException::class,
             NotFoundHttpException::class => PageNotFoundException::class,
-            BaseQueryException::class => QueryException::class,
+            BaseQueryException::class => function ($exception) {
+
+                //dd($message);
+                throw new QueryException(
+                    substr(
+                        $exception->getMessage(),
+                        0,
+                        \strpos(
+                            $exception->getMessage(),
+                            ':',
+                            \strpos(
+                                $exception->getMessage(),
+                                ':',
+                                \strpos(
+                                    $exception->getMessage(),
+                                    ':',) + 1
+                                ) + 1
+                            )
+                        )
+                    );
+            },
             BaseModelNotFoundException::class => ResourceNotFoundException::class,
             BaseRelationNotFoundException::class => RelationNotFoundException::class,
             ValidationException::class => function ($exception) {
